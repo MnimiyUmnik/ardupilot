@@ -33,6 +33,7 @@ public:
 
     void set_current(float current_amps);
     float get_voltage(void) const;
+    float resting_voltage;
 
 private:
     float capacity_Ah;
