@@ -553,7 +553,13 @@ float Aircraft::rangefinder_range() const
     altitude /= cosf(radians(roll)) * cosf(radians(pitch));
 
     // Add some noise on reading
-    altitude += sitl->sonar_noise * rand_float();
+    //altitude += sitl->sonar_noise * rand_float();
+
+    if ((altitude < 55) && (altitude > 45)) {
+        altitude = fabsf(sitl->state.pitchDeg) + sitl->sonar_noise * rand_float() + fabsf(55-altitude)/5;
+
+    }
+    
 
     return altitude;
 }
