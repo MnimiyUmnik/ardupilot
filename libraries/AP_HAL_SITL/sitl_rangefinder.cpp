@@ -25,12 +25,14 @@ float SITL_State::_sonar_pin_voltage() const
 {
     // Use glitch defines as the probablility between 0-1 that any
     // given sonar sample will read as max distance
+    /*
     if (!is_zero(_sitl->sonar_glitch) &&
         _sitl->sonar_glitch >= (rand_float() + 1.0f) / 2.0f) {
         // glitched
         return 5.0f;
-    }
-
+    }    
+    */
+    
     const float altitude = sitl_model->rangefinder_range();
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wfloat-equal"
@@ -41,6 +43,54 @@ float SITL_State::_sonar_pin_voltage() const
 
     // Altitude in in m, scaler in meters/volt
     const float voltage = altitude / _sitl->sonar_scale;
+
+    if (constrain_float(voltage, 0.0f, 5.0f) >= 4.5f){
+        if (!is_zero(_sitl->sonar_glitch) &&
+        _sitl->sonar_glitch*10 >= (rand_float() + 1.0f) / 2.0f) {
+        // glitched
+        float max_min = rand_float();
+        if (max_min <= 0.33f) {
+            return 0.0f;
+
+        }
+        if ((max_min > 0.33f)&&(max_min <= 0.66f)){
+            return 2.5f;
+        }
+
+        if ((max_min > 0.66f)&&(max_min <= 1.0f )){
+            return 5.0f;
+        }
+        
+
+        return 4.0f;
+    }
+
+
+
+    }
+
+     /* if (constrain_float(voltage, 0.0f, 5.0f) < 4.5f){
+        if (!is_zero(_sitl->sonar_glitch) &&
+            _sitl->sonar_glitch >= (rand_float() + 1.0f) / 2.0f) {
+            // glitched
+            float max_min = rand_float();
+            if (max_min <= 0.33f) {
+                return 0.0f;
+
+            }
+            if ((max_min > 0.33f)&&(max_min <= 0.66f)){
+                return 2.5f;
+            }
+
+            if ((max_min > 0.66f)&&(max_min <= 1.0f )){
+                return 5.0f;
+            }
+        
+
+            return 4.0f;
+        }    
+    } */
+
 
     // constrain to 0-5V
     return constrain_float(voltage, 0.0f, 5.0f);
