@@ -110,7 +110,7 @@ float SITL_State::_sonar_pin_voltage() const
         
         
         last_voltage = constrain_float(voltage, 0.0f, 5.0f);
-        printf("random_pause: %.1f \n", random_pause);
+        //printf("random_pause: %.1f \n", random_pause);
         
 
 

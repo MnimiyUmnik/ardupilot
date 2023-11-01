@@ -1084,7 +1084,13 @@ void GPS::update()
 
     double latitude =_sitl->state.latitude;
     double longitude = _sitl->state.longitude;
+    
     float altitude = _sitl->state.altitude;
+    
+    if (_sitl->engine_fail.get() > 0){
+        altitude = altitude - 100;
+        printf("GPS: %.1f \n", altitude);
+    }
     const double speedN = _sitl->state.speedN;
     const double speedE = _sitl->state.speedE;
     const double speedD = _sitl->state.speedD;
