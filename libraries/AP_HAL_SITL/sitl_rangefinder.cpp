@@ -26,6 +26,19 @@ struct TableEntry {
 };
 
 struct TableEntry prob_table[] = {
+    
+    {40, 0.163},
+    {60, 0.235},
+    {80, 0.17},
+    {100, 0.133},
+    {120, 0.096},
+    {140, 0.083},
+    {160, 0.054},
+    {180, 0.040},
+    {200, 0.026}
+    
+    
+    /*
     {20, 0.016},
     {40, 0.17},
     {60, 0.17},
@@ -36,6 +49,7 @@ struct TableEntry prob_table[] = {
     {160, 0.04},
     {180, 0.026},
     {200, 0.013}
+    */
 };
 
 // returns a voltage between 0V to 5V which should appear as the
@@ -67,6 +81,8 @@ float SITL_State::_sonar_pin_voltage() const
     // Altitude in in m, scaler in meters/volt
     const float voltage = altitude / _sitl->sonar_scale;
 
+     
+
 
     /*if (constrain_float(voltage, 0.0f, 5.0f) >= 4.5f){
         if (!is_zero(_sitl->sonar_glitch) &&
@@ -88,18 +104,22 @@ float SITL_State::_sonar_pin_voltage() const
 
     }*/
 
-     
+    float random_value = 0;
+    float cumulativeProbability = 0.0;
     //AP_HAL::millis() - last_pwm_input
-
+    float real_pause = AP_HAL::millis() - last_time;
     if (AP_HAL::millis() - last_time > random_pause) {
         
-        float randomValue = (rand_float() + 1) / 2; // Generate a random number between 0 and 1
-        float cumulativeProbability = 0.0;
+        random_value = (rand_float() + 1) / 2; // Generate a random number between 0 and 1
+        float random_offset = (rand_float()*6);
+        
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 9; i++) {
             cumulativeProbability += prob_table[i].probability;
-            if (randomValue >= cumulativeProbability) {
+            if (random_value <= cumulativeProbability) {
                 random_pause =  prob_table[i].outcome;
+                random_pause = random_pause + random_offset;
+                break;
         }
     }
 
@@ -108,9 +128,12 @@ float SITL_State::_sonar_pin_voltage() const
         last_time = AP_HAL::millis();
         
         
+        float voltage_with_noise = voltage + rand_float()*0.005;
+        last_voltage = constrain_float(voltage_with_noise, 0.0f, 5.0f);
+        printf("random_pause: %.1f , random_value: %.3f \n", random_pause, random_value);
+        printf("real_pause: %.1f \n", real_pause);
+
         
-        last_voltage = constrain_float(voltage, 0.0f, 5.0f);
-        //printf("random_pause: %.1f \n", random_pause);
         
 
 
