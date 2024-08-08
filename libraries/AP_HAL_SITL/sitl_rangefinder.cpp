@@ -18,7 +18,9 @@
 extern const AP_HAL::HAL& hal;
 float last_voltage = 0;
 float last_time = 0;
+float last_time_range = 0;
 float random_pause = 0;
+float rand_offset_range = 10;
 using namespace HALSITL;
 struct TableEntry {
     int outcome;
@@ -69,7 +71,13 @@ float SITL_State::_sonar_pin_voltage() const
     }    
     */
     
-    const float altitude = sitl_model->rangefinder_range();
+    if (AP_HAL::millis() - last_time_range > 20000) {
+        last_time_range = AP_HAL::millis();
+        rand_offset_range = ((rand_float() + 1) / 2) *10;
+    }
+
+
+    const float altitude = sitl_model->rangefinder_range() + rand_offset_range;
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wfloat-equal"
     if (altitude == INFINITY) {
@@ -79,7 +87,12 @@ float SITL_State::_sonar_pin_voltage() const
 #pragma GCC diagnostic pop
 
     // Altitude in in m, scaler in meters/volt
-    const float voltage = altitude / _sitl->sonar_scale;
+    float voltage = altitude / _sitl->sonar_scale;
+    //dead noise when radar
+    if (constrain_float(voltage, 0.0f, 5.0f) >= 4.5f){
+        voltage = 0.01;
+
+    }
 
      
 
