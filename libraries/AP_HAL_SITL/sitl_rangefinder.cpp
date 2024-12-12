@@ -21,6 +21,7 @@ float last_time = 0;
 float last_time_range = 0;
 float random_pause = 0;
 float rand_offset_range = 10;
+float real_pause = 0;
 using namespace HALSITL;
 struct TableEntry {
     int outcome;
@@ -70,6 +71,7 @@ float SITL_State::_sonar_pin_voltage() const
         return 5.0f;
     }    
     */
+
     
     if (AP_HAL::millis() - last_time_range > 20000) {
         last_time_range = AP_HAL::millis();
@@ -120,7 +122,7 @@ float SITL_State::_sonar_pin_voltage() const
     float random_value = 0;
     float cumulativeProbability = 0.0;
     //AP_HAL::millis() - last_pwm_input
-    float real_pause = AP_HAL::millis() - last_time;
+    real_pause = AP_HAL::millis() - last_time;
     if (AP_HAL::millis() - last_time > random_pause) {
         
         random_value = (rand_float() + 1) / 2; // Generate a random number between 0 and 1
@@ -143,8 +145,8 @@ float SITL_State::_sonar_pin_voltage() const
         
         float voltage_with_noise = voltage + rand_float()*0.005;
         last_voltage = constrain_float(voltage_with_noise, 0.0f, 5.0f);
-        printf("random_pause: %.1f , random_value: %.3f \n", random_pause, random_value);
-        printf("real_pause: %.1f \n", real_pause);
+        //printf("random_pause: %.1f , random_value: %.3f \n", random_pause, random_value);
+        //printf("real_pause: %.1f \n", real_pause);
 
         
         
