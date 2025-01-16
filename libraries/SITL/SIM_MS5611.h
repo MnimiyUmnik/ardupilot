@@ -40,6 +40,9 @@ private:
         15, 16, 8, 7, 8, 23
     };
 
+    uint64_t _last_corr_time;
+    float bad_alt = 0;
+
 };
 
 } // namespace SITL

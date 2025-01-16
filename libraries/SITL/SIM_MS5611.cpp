@@ -3,10 +3,12 @@
 #include "SIM_MS5611.h"
 
 #include <SITL/SITL.h>
-
+#include <AP_HAL/AP_HAL.h>
 #include <stdio.h>
 
 using namespace SITL;
+
+extern AP_HAL::HAL& hal;
 
 // forward conversion, copied from driver:
 void MS5611::convert_forward(int32_t D1, int32_t D2, float &P_Pa, float &Temp_C)
@@ -112,6 +114,14 @@ void MS5611::get_pressure_temperature_readings(float &P_Pa, float &Temp_C)
 
     float sim_alt = AP::sitl()->state.altitude;
     sim_alt += 2 * rand_float();
+    uint64_t now = AP_HAL::millis64();
+    //hal.console->printf("rengfinder go");
+    if (now  - _last_corr_time > 100000) {
+      _last_corr_time = now;
+      bad_alt -= 50; // * rand_float();
+      hal.console->printf("rengfinder %f \n",bad_alt);
+    }
+    sim_alt += bad_alt;
 
     AP_Baro::SimpleAtmosphere(sim_alt * 0.001f, sigma, delta, theta);
     P_Pa = SSL_AIR_PRESSURE * delta;
