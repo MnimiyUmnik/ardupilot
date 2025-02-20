@@ -80,9 +80,9 @@ protected:
         float c_l_r = 0.0;//0.14;
         float c_l_deltaa = 0.095f;//0.25;
         float c_l_deltar = 0.0f;//-0.037;
-        float c_m_0 = 0.0;// 0.045;
+        float c_m_0 = -0.02;// 0.045;
         float c_m_a = -0.572f;//-0.7;
-        float c_m_q = -0.165f;//-20;
+        float c_m_q = -12.0f;//-20;
         float c_m_deltae = 0.3f;//1.0;
         float c_n_0 = 0;
         float c_n_b = 0.041f;//0.25;

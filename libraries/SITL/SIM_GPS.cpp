@@ -391,8 +391,8 @@ void GPS::update_ubx(const struct gps_data *d)
     dop.gDOP = 65535;
     dop.pDOP = 65535;
     dop.tDOP = 65535;
-    dop.vDOP = 200;
-    dop.hDOP = 121;
+    dop.vDOP = 100;
+    dop.hDOP = 51;
     dop.nDOP = 65535;
     dop.eDOP = 65535;
     
